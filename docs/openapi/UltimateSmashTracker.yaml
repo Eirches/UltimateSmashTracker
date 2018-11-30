@@ -1,0 +1,448 @@
+openapi: 3.0.2
+info: 
+  title: "Ultimate Smash Tracker API"
+  version: "1.0.0"
+paths:
+  /players:
+    get:
+      summary: Retrieve a list of all registered players
+      operationId: getPlayers
+      tags:
+        - players
+      parameters:
+        - name: name
+          in: query
+          required: false
+      responses:
+        '200':
+          description: an array of known players.  Note, this may become paginated in a future update
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Players"
+    post:
+      summary: A new challenger approaches!
+      operationId: addPlayer
+      tags:
+        - players
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Player"
+      responses:
+        '201':
+          description: Player registered successfully
+          content:
+            application/json:
+              schema:
+                type: integer
+  /players/{playerId}:
+    get:
+      summary: Retrieve the details of a specific player
+      operationId: getPlayerByID
+      tags:
+       - players
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Details of a player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+    put:
+      summary: Update the details of a player.  Please note this is restricted to a few fields.
+      operationId: updatePlayer
+      tags:
+        - players
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Player"
+      responses:
+        '200':
+          description: The updated player information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+    delete:
+      summary: Permanently retire a player.  Their information will be kept for match history, but they will not appear in /players.
+      tags:
+        - players
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+      responses:
+        '202':
+          description: Player marked as deleted.
+  /players/{playerId}/matches:
+    get:
+      summary: Retrieve a history of matches for a player
+      operationId:
+      tags:
+        - players
+      responses:
+        '200':
+          description: A full list of matches for a given player.  May be paginated in the future.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+  /characters:
+    get:
+      summary: Everyone is here!
+      operationId: getCharacters
+      tags:
+        - characters
+      responses:
+        '200':
+          description: A list of all the characters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Character"
+    post:
+      summary: For DLC
+      operationId: addCharacter
+      tags:
+        - characters
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Character"
+      responses:
+        '201':
+          description: Confirmation that a character was created
+  /characters/{characterId}:
+    get:
+      summary: Let's see some detailed information on a character
+      operationId: getCharacterDetails
+      tags:
+        - characters
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+      responses:
+        '200':
+          description:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Character"
+    delete:
+      summary: For administrative purposes
+      operationId: removeCharacter
+      tags:
+        - characters
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Successfully removed character
+  /characters/{characterId}/matches:
+    get:
+      summary: Show the history of matches involving a specific character
+      operationId: getCharacterMatchHistory
+      tags:
+        - characters
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+      responses:
+        '200':
+          description: A response body containing all match history for a given character.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+  /stages:
+    get:
+      summary:
+      operationId:
+      tags:
+        - stages
+      responses:
+        '200':
+          description: A list of available stages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Stage"
+    post:
+      summary: For DLC
+      operationId: addStage
+      tags:
+        - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Stage"
+      responses:
+        '201':
+          description: Stage added succesfully
+  /stages/{stageId}:
+    delete:
+      summary: For administrative purposes
+      operationId: removeStage
+      tags:
+        - stages
+      parameters:
+        - name: stageId
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Stage removed successfully.
+  /stages/{stageId}/matches:
+    get:
+      summary:
+      operationId:
+      tags:
+        - stages
+      parameters:
+        - name: stageId
+          in: path
+          required: true
+      responses:
+        '200':
+          description: All the match history for a stage
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+  /matches:
+    get:
+      summary:
+      operationId:
+      tags:
+        - matches
+      parameters:
+        - name: characterId
+          in: query
+          required: false
+        - name: stageId
+          in: query
+          required: false
+        - name: playerId
+          in: query
+          required: false
+      responses:
+        '200':
+          description: A list of matches from all time.  To be paginated in the future.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+    post:
+      summary: Record a match for ultimate bragging rights
+      operationId: recordMatch
+      tags:
+        - matches
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Match"
+      responses:
+        '201':
+          description: Match added successfully
+          content:
+            application/json:
+              schema:
+                type: integer
+  /matches/{matchId}:
+    get:
+      summary: Retrieve the details of a specific match
+      operationId: getMatchDetails
+      tags:
+        - matches
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+      responses:
+        '200':
+          description: The match details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+    put:
+      summary: When someone misclicks this is how we fix it
+      operationId: updateMatch
+      tags:
+        - matches
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Match"
+      responses:
+        '200':
+          description: Match updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+    delete:
+      summary: For when someone is a lying bastard
+      operationId: removeMatch
+      tags:
+        - matches
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+      responses:
+        '200':
+          description: Match deleted successfully
+components:
+  schemas:
+    Player:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        lastMatch:
+          $ref: "#/components/schemas/Match"
+        wins:
+          type: integer
+        losses:
+          type: integer
+        mostPlayedCharacter:
+          $ref: "#/components/schemas/Character"
+        isDeleted:
+          type: boolean
+    Players:
+      type: array
+      items:
+        $ref: "#/components/schemas/Player"
+    Character:
+      required:
+        - id
+        - name
+        - portraitImg
+        - fullImg
+        - series
+      properties:
+        id:
+          type: string
+          description: note - this ID corresponds to official fighter number.  It is a string to account for echo status.  For example - Simon's ID is 66, and Richter's is 66E.
+        name:
+          type: string
+        portraitImg:
+          type: string
+          format: uri
+        fullImg:
+          type: string
+          format: uri
+        series:
+          $ref: "#/components/schemas/Series"
+        totalPlays:
+          type: integer
+        totalWins:
+          type: integer
+        totalLosses:
+          type: integer
+    PlayerCharacter:
+      required:
+        - playerId
+        - characterId
+      properties:
+        playerId:
+          type: integer
+        characterId:
+          type: string
+    Stage:
+      required:
+        - id
+        - name
+        - fullImg
+        - series
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        fullImg:
+          type: string
+          format: uri
+        series:
+          $ref: "#/components/schemas/Series"
+    Match:
+      required:
+        - id
+        - players
+        - winner
+        - stage
+        - items
+        - recorder
+      properties:
+        id:
+          type: integer
+        players:
+          type: array
+          items:
+            $ref: "#components/schemas/PlayerCharacter"
+        winner:
+          type: integer
+          description: PlayerID of the winner
+        stage:
+          $ref: "#/components/schemas/Stage"
+        items:
+          type: boolean
+        recorder:
+          type: integer
+          description: PlayerID of the user who submitted the match
+    Series:
+      required:
+        - id
+        - name
+        - icon
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        icon:
+          type: string
+          format: uri

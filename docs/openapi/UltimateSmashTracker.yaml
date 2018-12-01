@@ -3,6 +3,51 @@ info:
   title: "Ultimate Smash Tracker API"
   version: "1.0.0"
 paths:
+  /auth:
+    post:
+      summary: Submit login information to retrieve an authorization token
+      operationId: login
+      tags:
+        - auth
+      parameters:
+        - in: header
+          name: X-SSK
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthData"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        '401':
+          description: Invalid credentials
+  /register:
+    post:
+      summary: A new challenger approaches!
+      description: NOTICE - The first user you add will be marked as the administrator, and have access to admin-only calls.
+      operationId: register
+      tags:
+        - auth
+      parameters:
+        - in: header
+          name: X-SSK
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthData"
+      responses:
+        '201':
+          description: User added successfully
+        '400':
+          description: Username already in use
   /players:
     get:
       summary: Retrieve a list of all registered players
@@ -13,6 +58,9 @@ paths:
         - name: name
           in: query
           required: false
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: an array of known players.  Note, this may become paginated in a future update
@@ -22,23 +70,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Players"
-    post:
-      summary: A new challenger approaches!
-      operationId: addPlayer
-      tags:
-        - players
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Player"
-      responses:
-        '201':
-          description: Player registered successfully
-          content:
-            application/json:
-              schema:
-                type: integer
   /players/{playerId}:
     get:
       summary: Retrieve the details of a specific player
@@ -48,6 +79,9 @@ paths:
       parameters:
         - name: playerId
           in: path
+          required: true
+        - in: header
+          name: X-AuthToken
           required: true
       responses:
         '200':
@@ -64,6 +98,9 @@ paths:
       parameters:
         - name: playerId
           in: path
+          required: true
+        - in: header
+          name: X-AuthToken
           required: true
       requestBody:
         content:
@@ -85,15 +122,24 @@ paths:
         - name: playerId
           in: path
           required: true
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '202':
           description: Player marked as deleted.
+        '403':
+          description: User is not allowed to perform this operation
   /players/{playerId}/matches:
     get:
       summary: Retrieve a history of matches for a player
       operationId:
       tags:
         - players
+      parameters:
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: A full list of matches for a given player.  May be paginated in the future.
@@ -109,6 +155,10 @@ paths:
       operationId: getCharacters
       tags:
         - characters
+      parameters:
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: A list of all the characters
@@ -123,6 +173,10 @@ paths:
       operationId: addCharacter
       tags:
         - characters
+      parameters:
+        - in: header
+          name: X-AuthToken
+          required: true
       requestBody:
         content:
           application/json:
@@ -131,6 +185,8 @@ paths:
       responses:
         '201':
           description: Confirmation that a character was created
+        '403':
+          description: User is not allowed to perform this operation
   /characters/{characterId}:
     get:
       summary: Let's see some detailed information on a character
@@ -140,6 +196,9 @@ paths:
       parameters:
         - name: characterId
           in: path
+          required: true
+        - in: header
+          name: X-AuthToken
           required: true
       responses:
         '200':
@@ -157,9 +216,14 @@ paths:
         - name: characterId
           in: path
           required: true
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: Successfully removed character
+        '403':
+          description: User is not allowed to perform this operation
   /characters/{characterId}/matches:
     get:
       summary: Show the history of matches involving a specific character
@@ -169,6 +233,9 @@ paths:
       parameters:
         - name: characterId
           in: path
+          required: true
+        - in: header
+          name: X-AuthToken
           required: true
       responses:
         '200':
@@ -185,6 +252,10 @@ paths:
       operationId:
       tags:
         - stages
+      parameters:
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: A list of available stages
@@ -199,6 +270,10 @@ paths:
       operationId: addStage
       tags:
         - stages
+      parameters:
+        - in: header
+          name: X-AuthToken
+          required: true
       requestBody:
         content:
           application/json:
@@ -207,6 +282,8 @@ paths:
       responses:
         '201':
           description: Stage added succesfully
+        '403':
+          description: User is not allowed to perform this operation
   /stages/{stageId}:
     delete:
       summary: For administrative purposes
@@ -217,9 +294,14 @@ paths:
         - name: stageId
           in: path
           required: true
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: Stage removed successfully.
+        '403':
+          description: User is not allowed to perform this operation
   /stages/{stageId}/matches:
     get:
       summary:
@@ -229,6 +311,9 @@ paths:
       parameters:
         - name: stageId
           in: path
+          required: true
+        - in: header
+          name: X-AuthToken
           required: true
       responses:
         '200':
@@ -255,6 +340,9 @@ paths:
         - name: playerId
           in: query
           required: false
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: A list of matches from all time.  To be paginated in the future.
@@ -269,6 +357,10 @@ paths:
       operationId: recordMatch
       tags:
         - matches
+      parameters:
+        - in: header
+          name: X-AuthToken
+          required: true
       requestBody:
         content:
           application/json:
@@ -291,6 +383,9 @@ paths:
         - name: matchId
           in: path
           required: true
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: The match details
@@ -306,6 +401,9 @@ paths:
       parameters:
         - name: matchId
           in: path
+          required: true
+        - in: header
+          name: X-AuthToken
           required: true
       requestBody:
         content:
@@ -328,9 +426,14 @@ paths:
         - name: matchId
           in: path
           required: true
+        - in: header
+          name: X-AuthToken
+          required: true
       responses:
         '200':
           description: Match deleted successfully
+        '403':
+          description: User is not allowed to perform this operation
 components:
   schemas:
     Player:
@@ -360,8 +463,6 @@ components:
       required:
         - id
         - name
-        - portraitImg
-        - fullImg
         - series
       properties:
         id:
@@ -369,12 +470,6 @@ components:
           description: note - this ID corresponds to official fighter number.  It is a string to account for echo status.  For example - Simon's ID is 66, and Richter's is 66E.
         name:
           type: string
-        portraitImg:
-          type: string
-          format: uri
-        fullImg:
-          type: string
-          format: uri
         series:
           $ref: "#/components/schemas/Series"
         totalPlays:
@@ -396,16 +491,12 @@ components:
       required:
         - id
         - name
-        - fullImg
         - series
       properties:
         id:
           type: integer
         name:
           type: string
-        fullImg:
-          type: string
-          format: uri
         series:
           $ref: "#/components/schemas/Series"
     Match:
@@ -413,9 +504,7 @@ components:
         - id
         - players
         - winner
-        - stage
         - items
-        - recorder
       properties:
         id:
           type: integer
@@ -433,16 +522,33 @@ components:
         recorder:
           type: integer
           description: PlayerID of the user who submitted the match
+        time:
+          type: string
+          format: date-time
     Series:
       required:
         - id
         - name
-        - icon
       properties:
         id:
           type: integer
         name:
           type: string
-        icon:
+    AuthData:
+      required:
+        - name
+        - password
+      properties:
+        name:
           type: string
-          format: uri
+        password:
+          type: string
+    AuthResponse:
+      required:
+        - id
+        - authToken
+      properties:
+        id:
+          type: integer
+        authToken:
+          type: string

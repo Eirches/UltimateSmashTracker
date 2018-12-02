@@ -66,7 +66,7 @@ class MatchTransformer {
             }
         }
 
-        return MatchDTO(playerOne, characterOne, playerTwo, characterTwo, match.winner, match.recorder, match.stage, match.items, match.time, playerThree, characterThree, playerFour, characterFour, playerFive, characterFive, playerSix, characterSix, playerSeven, characterSeven, playerEight, characterEight, match.id)
+        return MatchDTO(playerOne, characterOne, playerTwo, characterTwo, match.winner, match.recorder?:0, match.stage, match.items, match.time, playerThree, characterThree, playerFour, characterFour, playerFive, characterFive, playerSix, characterSix, playerSeven, characterSeven, playerEight, characterEight, match.id)
     }
 
     fun matchFromDTO(matchDTO: MatchDTO) : Match {

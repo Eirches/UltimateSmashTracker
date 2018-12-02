@@ -5,11 +5,9 @@ import com.assisteddarwinism.ultimatesmashtracker.match.model.Match
 import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchRepository
 import com.fasterxml.jackson.databind.deser.DataFormatReaders
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/matches")
@@ -31,5 +29,29 @@ class MatchController {
         return matchRepository.findAll().map { it -> matchTransformer.matchFromDTO(it) }
     }
 
+    @PostMapping
+    fun addMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match : Match) {
+        tokenValidator.checkTokenValid(token)
+
+        matchRepository.save(matchTransformer.matchToDTO(match))
+    }
+
+    @DeleteMapping("/{matchId}")
+    fun deleteMatch(@RequestHeader("X-AuthToken") token: String, @PathVariable("matchId") matchId: Long) {
+        tokenValidator.checkTokenAdmin(token)
+        matchRepository.deleteById(matchId)
+    }
+
+    @GetMapping("/{matchId}")
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    fun getMatchDetails(@RequestHeader("X-AuthToken") token: String, @PathVariable("matchId") matchId: Long) {
+        tokenValidator.checkTokenValid(token)
+    }
+
+    @PutMapping("/{matchId}")
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    fun updateMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match:Match, @PathVariable("matchId") matchId: Long) {
+       tokenValidator.checkTokenValid(token)
+    }
 
 }

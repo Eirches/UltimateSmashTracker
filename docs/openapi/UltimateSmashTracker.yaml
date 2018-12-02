@@ -1,5 +1,5 @@
 openapi: 3.0.2
-info: 
+info:
   title: "Ultimate Smash Tracker API"
   version: "1.0.0"
 paths:
@@ -75,7 +75,7 @@ paths:
       summary: Retrieve the details of a specific player
       operationId: getPlayerByID
       tags:
-       - players
+        - players
       parameters:
         - name: playerId
           in: path
@@ -133,10 +133,13 @@ paths:
   /players/{playerId}/matches:
     get:
       summary: Retrieve a history of matches for a player
-      operationId:
+      operationId: getPlayerMatches
       tags:
         - players
       parameters:
+        - name: playerId
+          in: path
+          required: true
         - in: header
           name: X-AuthToken
           required: true

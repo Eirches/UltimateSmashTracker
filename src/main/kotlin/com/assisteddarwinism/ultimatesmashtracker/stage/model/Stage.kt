@@ -7,4 +7,4 @@ import javax.persistence.Table
 
 @Entity
 @Table(name="Stages")
-data class Stage(val name: String, val series: Long, @Id @GeneratedValue val id: Int?)
+data class Stage(val name: String, val series: Long, @Id @GeneratedValue val id: Long?)

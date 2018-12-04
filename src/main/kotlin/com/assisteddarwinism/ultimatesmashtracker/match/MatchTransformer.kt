@@ -31,36 +31,36 @@ class MatchTransformer {
         for(i in 1..match.players.count()) {
             when(i) {
                 1 -> {
-                    playerOne = match.players.get(i).playerId
-                    characterOne = match.players.get(i).characterId
+                    playerOne = match.players.get(i-1).playerId
+                    characterOne = match.players.get(i-1).characterId
                 }
                 2 -> {
-                    playerTwo = match.players.get(i).playerId
-                    characterTwo = match.players.get(i).characterId
+                    playerTwo = match.players.get(i-1).playerId
+                    characterTwo = match.players.get(i-1).characterId
                 }
                 3 -> {
-                    playerThree = match.players.get(i).playerId
-                    characterThree = match.players.get(i).characterId
+                    playerThree = match.players.get(i-1).playerId
+                    characterThree = match.players.get(i-1).characterId
                 }
                 4 -> {
-                    playerFour = match.players.get(i).playerId
-                    characterFour = match.players.get(i).characterId
+                    playerFour = match.players.get(i-1).playerId
+                    characterFour = match.players.get(i-1).characterId
                 }
                 5 -> {
-                    playerFive = match.players.get(i).playerId
-                    characterFive = match.players.get(i).characterId
+                    playerFive = match.players.get(i-1).playerId
+                    characterFive = match.players.get(i-1).characterId
                 }
                 6 -> {
-                    playerSix = match.players.get(i).playerId
-                    characterSix = match.players.get(i).characterId
+                    playerSix = match.players.get(i-1).playerId
+                    characterSix = match.players.get(i-1).characterId
                 }
                 7 -> {
-                    playerSeven = match.players.get(i).playerId
-                    characterSeven = match.players.get(i).characterId
+                    playerSeven = match.players.get(i-1).playerId
+                    characterSeven = match.players.get(i-1).characterId
                 }
                 8 -> {
-                    playerEight = match.players.get(i).playerId
-                    characterEight = match.players.get(i).characterId
+                    playerEight = match.players.get(i-1).playerId
+                    characterEight = match.players.get(i-1).characterId
                 }
                 else -> throw InvalidInputException()
             }

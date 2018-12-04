@@ -37,6 +37,11 @@ compileTestKotlin {
     }
 }
 
+test {
+    environment "SSK", "test"
+    environment "tokenExpirySeconds", "1200"
+}
+
 repositories {
     mavenCentral()
 }

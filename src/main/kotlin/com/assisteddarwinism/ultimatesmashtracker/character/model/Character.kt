@@ -7,4 +7,4 @@ import javax.persistence.Table
 
 @Entity
 @Table(name="Characters")
-data class Character(val name: String, val series: Long, @Id @GeneratedValue val id: Long?)
+data class Character(val name: String, val series: Long, @Id val id: String)

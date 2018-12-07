@@ -7,4 +7,4 @@ import javax.persistence.Table
 
 @Entity
 @Table(name="Series")
-data class Series(val name: String, @Id @GeneratedValue val id: Long?)
+data class Series(val name: String, @Id val id: Long)

@@ -25,7 +25,7 @@ class CharacterController {
 
     @GetMapping("/{characterId}")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    fun getCharacterDetails(@RequestHeader("X-Authtoken") token: String, @PathVariable characterId: Long) {
+    fun getCharacterDetails(@RequestHeader("X-Authtoken") token: String, @PathVariable characterId: String) {
         tokenValidator.checkTokenValid(token)
     }
 
@@ -36,14 +36,14 @@ class CharacterController {
     }
 
     @DeleteMapping("/{characterId}")
-    fun removeCharacter(@RequestHeader("X-AuthToken") token: String, @PathVariable characterId: Long) {
+    fun removeCharacter(@RequestHeader("X-AuthToken") token: String, @PathVariable characterId: String) {
         tokenValidator.checkTokenAdmin(token)
         characterRepository.deleteById(characterId)
     }
 
     @GetMapping("/{characterId}/matches")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    fun getCharacterMatches(@RequestHeader("X-Authtoken") token: String, @PathVariable characterId: Long) {
+    fun getCharacterMatches(@RequestHeader("X-Authtoken") token: String, @PathVariable characterId: String) {
         tokenValidator.checkTokenValid(token)
     }
 

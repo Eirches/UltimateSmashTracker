@@ -25,14 +25,21 @@ class MatchController {
     lateinit var playerCharacterCombinationRepository: PlayerCharacterCombinationRepository
 
     @GetMapping
-    fun getMatches(@RequestHeader("X-AuthToken") token: String) : List<Match> {
+    fun getMatches(@RequestHeader("X-AuthToken") token: String): List<Match> {
         tokenValidator.checkTokenValid(token)
 
         return matchRepository.findAll().map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map { PlayerCharacterRelation(it) }) }
     }
 
+    @GetMapping("/players/{playerId}")
+    fun getMatches(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long): List<Match> {
+        tokenValidator.checkTokenValid(token)
+
+        return getMatches(token).filter { it.players.any { it.playerId == playerId } }
+    }
+
     @PostMapping
-    fun addMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match : Match) {
+    fun addMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match: Match) {
         tokenValidator.checkTokenValid(token)
 
         var matchDTO = MatchDTO(match)
@@ -55,8 +62,8 @@ class MatchController {
 
     @PutMapping("/{matchId}")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    fun updateMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match:Match, @PathVariable("matchId") matchId: Long) {
-       tokenValidator.checkTokenValid(token)
+    fun updateMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match: Match, @PathVariable("matchId") matchId: Long) {
+        tokenValidator.checkTokenValid(token)
     }
 
 }

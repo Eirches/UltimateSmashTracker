@@ -25,7 +25,7 @@ class MatchController {
     lateinit var playerCharacterCombinationRepository: PlayerCharacterCombinationRepository
 
     @GetMapping
-    fun getMatches(@RequestHeader("X-AuthToken") token: String, @RequestParam("playerIds") playerIds: List<Long>): List<Match> {
+    fun getMatches(@RequestHeader("X-AuthToken") token: String, @RequestParam("playerIds", required = false) playerIds: List<Long>): List<Match> {
         tokenValidator.checkTokenValid(token)
 
         return matchRepository.findAll().map {

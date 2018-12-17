@@ -28,8 +28,11 @@ class MatchController {
     fun getMatches(@RequestHeader("X-AuthToken") token: String, @RequestParam("") playerIds: List<Long>): List<Match> {
         tokenValidator.checkTokenValid(token)
 
-        var allMatches = matchRepository.findAll().map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map { PlayerCharacterRelation(it) }) }
-        return allMatches.filter { it.players.any { it.playerId in playerIds } }
+        return matchRepository.findAll().map {
+            Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map {
+                PlayerCharacterRelation(it)
+            })
+        }.filter { it.players.any { it.playerId in playerIds } }
     }
 
     @PostMapping

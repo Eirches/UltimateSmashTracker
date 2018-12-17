@@ -32,13 +32,14 @@ class PlayerController {
     }
 
     @GetMapping("/{playerId}")
-    fun getPlayer(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long): Player {
+    fun getPlayerDetails(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long): Player {
         tokenValidator.checkTokenValid(token)
         try {
             return getPlayers(token).first { it.id == playerId }
         } catch (e: NoSuchElementException) {
             throw ResourceNotFoundException()
         }
+        // TODO: calculate wins, losses, and characters
     }
 
     @GetMapping("/me")
@@ -52,6 +53,9 @@ class PlayerController {
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     fun getPlayerMatches(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long) {
         tokenValidator.checkTokenValid(token)
+        var me = getMe(token)
+
+        // TODO:
     }
 
     @DeleteMapping("/{playerId}")

@@ -5,6 +5,7 @@ import com.assisteddarwinism.ultimatesmashtracker.match.model.Match
 import com.assisteddarwinism.ultimatesmashtracker.match.model.PlayerCharacterRelation
 import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchDTO
 import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchRepository
+import com.assisteddarwinism.ultimatesmashtracker.player.PlayerController
 import com.assisteddarwinism.ultimatesmashtracker.playerCharacters.model.PlayerCharacterCombination
 import com.assisteddarwinism.ultimatesmashtracker.playerCharacters.repository.PlayerCharacterCombinationRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,6 +39,13 @@ class MatchController {
         return getMatches(token).filter { it.players.any { it.playerId == playerId } }
     }
 
+    @GetMapping("/me")
+    fun getMyMatches(@RequestHeader("X-AuthToken") token: String): List<Match> {
+        tokenValidator.checkTokenValid(token)
+        var me = PlayerController().getMe(token)
+        return getMatches(token).filter { it.players.any { it.playerId == me.id } }
+    }
+
     @PostMapping
     fun addMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match: Match) {
         tokenValidator.checkTokenValid(token)
@@ -45,7 +53,6 @@ class MatchController {
         var matchDTO = MatchDTO(match)
         matchRepository.save(matchDTO)
         match.players.forEach { playerCharacterCombinationRepository.save(PlayerCharacterCombination(matchDTO.id!!, it)) }
-
     }
 
     @DeleteMapping("/{matchId}")

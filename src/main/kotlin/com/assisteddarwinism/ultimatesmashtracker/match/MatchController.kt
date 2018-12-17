@@ -10,6 +10,7 @@ import com.assisteddarwinism.ultimatesmashtracker.playerCharacters.repository.Pl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/matches")
@@ -25,14 +26,11 @@ class MatchController {
     lateinit var playerCharacterCombinationRepository: PlayerCharacterCombinationRepository
 
     @GetMapping
-    fun getMatches(@RequestHeader("X-AuthToken") token: String, @RequestParam("playerIds", required = false) playerIds: List<Long>): List<Match> {
+    fun getMatches(@RequestHeader("X-AuthToken") token: String, @RequestParam("playerIds") playerIds: Optional<List<Long>>): List<Match> {
         tokenValidator.checkTokenValid(token)
 
-        return matchRepository.findAll().map {
-            Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map {
-                PlayerCharacterRelation(it)
-            })
-        }.filter { it.players.any { it.playerId in playerIds } }
+        var matches = matchRepository.findAll().map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map { PlayerCharacterRelation(it) }) }
+        return if (playerIds.isPresent) matches.filter { it.players.any { it.playerId in playerIds } } else matches
     }
 
     @PostMapping

@@ -46,22 +46,31 @@ class PlayerController {
         tokenValidator.checkTokenValid(token)
         if (!playerRepository.existsById(playerId)) throw ResourceNotFoundException()
         val player = playerRepository.findById(playerId).get()
-        val matches = matchRepository.findAll().map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map { PlayerCharacterRelation(it) }) }
-        val wins = matches.count { it.winner == player.id }
-        val losses = matches.count { it.winner != player.id }
-        val mostPlayedCharId = matches.flatMap { it.players }
-                .filter { it.playerId == player.id }
-                .groupBy { it.characterId }
-                .maxBy { it.value.size }!!.key
-        val mostRecentMatchId = matches.maxBy { it.time }!!.id
-        return Player(player.id!!, player.name, wins, losses, mostPlayedCharId, mostRecentMatchId)
+        val matches = matchRepository.findAll()
+                .map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!)
+                        .map { PlayerCharacterRelation(it) }) }
+
+        return if (matches.isNotEmpty()) {
+            val wins = matches.count { it.winner == player.id }
+            val losses = wins - matches.size
+            val mostPlayedCharId = matches.flatMap { it.players }
+                    .filter { it.playerId == player.id }
+                    .groupBy { it.characterId }
+                    .maxBy { it.value.size }!!.key
+            val mostRecentMatchId = matches.maxBy { it.time }!!.id
+            Player(player.id!!, player.name, wins, losses, mostPlayedCharId, mostRecentMatchId)
+        } else {
+            Player(player.id!!, player.name)
+        }
     }
 
     @GetMapping("/me")
     fun getMe(@RequestHeader("X-AuthToken") token: String): Player {
         tokenValidator.checkTokenValid(token)
         var currentUserId = tokenRepository.findTokenDTOByToken(token).id
-        return getPlayerDetails(token, playerId = currentUserId)
+        if (!playerRepository.existsById(currentUserId)) throw ResourceNotFoundException()
+        val playerDTO = playerRepository.findById(currentUserId).get()
+        return Player(playerDTO.id!!, playerDTO.name)
     }
 
     @DeleteMapping("/{playerId}")

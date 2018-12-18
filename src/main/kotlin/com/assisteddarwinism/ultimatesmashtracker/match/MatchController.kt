@@ -30,7 +30,11 @@ class MatchController {
         tokenValidator.checkTokenValid(token)
 
         var matches = matchRepository.findAll().map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map { PlayerCharacterRelation(it) }) }
-        return if (playerIds.isPresent) matches.filter { it.players.any { it.playerId in playerIds.get() } } else matches
+        return if (playerIds.isPresent) {
+            matches.filter { it.players.any { it.playerId in playerIds.get() } }
+        } else {
+            matches
+        }
     }
 
     @PostMapping

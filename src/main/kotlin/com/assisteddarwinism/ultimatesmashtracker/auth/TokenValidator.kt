@@ -31,4 +31,8 @@ class TokenValidator {
         if(!player.get().admin) throw InsufficientPrivilegesException()
     }
 
+    fun getIdFromToken(token: String): Long {
+        return tokenRepository.findTokenDTOByToken(token).id
+    }
+
 }

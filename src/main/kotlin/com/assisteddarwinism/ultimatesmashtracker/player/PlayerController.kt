@@ -1,7 +1,6 @@
 package com.assisteddarwinism.ultimatesmashtracker.player
 
 import com.assisteddarwinism.ultimatesmashtracker.auth.TokenValidator
-import com.assisteddarwinism.ultimatesmashtracker.auth.repository.token.TokenRepository
 import com.assisteddarwinism.ultimatesmashtracker.match.model.Match
 import com.assisteddarwinism.ultimatesmashtracker.match.model.PlayerCharacterRelation
 import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchRepository
@@ -13,7 +12,6 @@ import com.assisteddarwinism.ultimatesmashtracker.playerCharacters.repository.Pl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.websocket.server.PathParam
 
 @RestController
 @RequestMapping("/players")
@@ -26,9 +24,6 @@ class PlayerController {
     lateinit var playerRepository: PlayerRepository
 
     @Autowired
-    lateinit var tokenRepository: TokenRepository
-
-    @Autowired
     lateinit var matchRepository: MatchRepository
 
     @Autowired
@@ -38,17 +33,19 @@ class PlayerController {
     fun getPlayers(@RequestHeader("X-AuthToken") token: String): List<Player> {
         tokenValidator.checkTokenValid(token)
 
-        return playerRepository.findAll().map { it -> Player(it.id!!, it.name) }
+        return playerRepository.findAll().map { it -> Player(it.id!!, it.name) }.filter { !it.isDeleted }
     }
 
     @GetMapping("/{playerId}")
     fun getPlayerDetails(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long): Player {
         tokenValidator.checkTokenValid(token)
-        if (!playerRepository.existsById(playerId)) throw ResourceNotFoundException()
+        if (!playerRepository.existsById(playerId) || playerRepository.findById(playerId).get().isDeleted) throw ResourceNotFoundException()
         val player = playerRepository.findById(playerId).get()
         val matches = matchRepository.findAll()
-                .map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!)
-                        .map { PlayerCharacterRelation(it) }) }
+                .map {
+                    Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!)
+                            .map { PlayerCharacterRelation(it) })
+                }
 
         return if (matches.isNotEmpty()) {
             val wins = matches.count { it.winner == player.id }
@@ -66,11 +63,7 @@ class PlayerController {
 
     @GetMapping("/me")
     fun getMe(@RequestHeader("X-AuthToken") token: String): Player {
-        tokenValidator.checkTokenValid(token)
-        var currentUserId = tokenRepository.findTokenDTOByToken(token).id
-        if (!playerRepository.existsById(currentUserId)) throw ResourceNotFoundException()
-        val playerDTO = playerRepository.findById(currentUserId).get()
-        return Player(playerDTO.id!!, playerDTO.name)
+        return getPlayerDetails(token, tokenValidator.getIdFromToken(token))
     }
 
     @DeleteMapping("/{playerId}")

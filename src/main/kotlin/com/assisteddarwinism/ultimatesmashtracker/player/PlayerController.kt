@@ -2,11 +2,14 @@ package com.assisteddarwinism.ultimatesmashtracker.player
 
 import com.assisteddarwinism.ultimatesmashtracker.auth.TokenValidator
 import com.assisteddarwinism.ultimatesmashtracker.auth.repository.token.TokenRepository
+import com.assisteddarwinism.ultimatesmashtracker.match.model.Match
+import com.assisteddarwinism.ultimatesmashtracker.match.model.PlayerCharacterRelation
 import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchRepository
 import com.assisteddarwinism.ultimatesmashtracker.model.exception.ResourceNotFoundException
 import com.assisteddarwinism.ultimatesmashtracker.player.model.Player
 import com.assisteddarwinism.ultimatesmashtracker.player.repository.PlayerDTO
 import com.assisteddarwinism.ultimatesmashtracker.player.repository.PlayerRepository
+import com.assisteddarwinism.ultimatesmashtracker.playerCharacters.repository.PlayerCharacterCombinationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -28,6 +31,9 @@ class PlayerController {
     @Autowired
     lateinit var matchRepository: MatchRepository
 
+    @Autowired
+    lateinit var playerCharacterCombinationRepository: PlayerCharacterCombinationRepository
+
     @GetMapping
     fun getPlayers(@RequestHeader("X-AuthToken") token: String): List<Player> {
         tokenValidator.checkTokenValid(token)
@@ -39,11 +45,16 @@ class PlayerController {
     fun getPlayerDetails(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long): Player {
         tokenValidator.checkTokenValid(token)
         if (!playerRepository.existsById(playerId)) throw ResourceNotFoundException()
-        var player = playerRepository.findById(playerId)
-        var matches = matchRepository.findAll()
-//        var wins = matches.count { it.winner == player.get().id }
-//        var losses = matches.count { it.winner != player.get().id }
-//        var  mostPlayedCharacter = matches.flatMap { it. }
+        val player = playerRepository.findById(playerId).get()
+        val matches = matchRepository.findAll().map { Match(it, playerCharacterCombinationRepository.findAllByMatchId(it.id!!).map { PlayerCharacterRelation(it) }) }
+        val wins = matches.count { it.winner == player.id }
+        val losses = matches.count { it.winner != player.id }
+        val mostPlayedCharId = matches.flatMap { it.players }
+                .filter { it.playerId == player.id }
+                .groupBy { it.characterId }
+                .maxBy { it.value.size }!!.key
+        val mostRecentMatchId = matches.maxBy { it.time }!!.id
+        return Player(player.id!!, player.name, wins, losses, mostPlayedCharId, mostRecentMatchId)
     }
 
     @GetMapping("/me")

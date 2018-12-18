@@ -38,13 +38,6 @@ class MatchController {
         }
     }
 
-    @GetMapping("/me")
-    fun getMyMatches(@RequestHeader("X-AuthToken") token: String): List<Match> {
-        tokenValidator.checkTokenValid(token)
-        var me = PlayerController().getMe(token)
-        return getMatches(token).filter { it.players.any { it.playerId == me.id } }
-    }
-
     @PostMapping
     fun addMatch(@RequestHeader("X-AuthToken") token: String, @RequestBody match: Match) {
         tokenValidator.checkTokenValid(token)

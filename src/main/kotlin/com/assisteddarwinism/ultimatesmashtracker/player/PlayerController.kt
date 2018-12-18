@@ -2,6 +2,7 @@ package com.assisteddarwinism.ultimatesmashtracker.player
 
 import com.assisteddarwinism.ultimatesmashtracker.auth.TokenValidator
 import com.assisteddarwinism.ultimatesmashtracker.auth.repository.token.TokenRepository
+import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchRepository
 import com.assisteddarwinism.ultimatesmashtracker.model.exception.ResourceNotFoundException
 import com.assisteddarwinism.ultimatesmashtracker.player.model.Player
 import com.assisteddarwinism.ultimatesmashtracker.player.repository.PlayerDTO
@@ -24,6 +25,9 @@ class PlayerController {
     @Autowired
     lateinit var tokenRepository: TokenRepository
 
+    @Autowired
+    lateinit var matchRepository: MatchRepository
+
     @GetMapping
     fun getPlayers(@RequestHeader("X-AuthToken") token: String): List<Player> {
         tokenValidator.checkTokenValid(token)
@@ -34,28 +38,19 @@ class PlayerController {
     @GetMapping("/{playerId}")
     fun getPlayerDetails(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long): Player {
         tokenValidator.checkTokenValid(token)
-        try {
-            return getPlayers(token).first { it.id == playerId }
-        } catch (e: NoSuchElementException) {
-            throw ResourceNotFoundException()
-        }
-        // TODO: calculate wins, losses, and characters
+        if (!playerRepository.existsById(playerId)) throw ResourceNotFoundException()
+        var player = playerRepository.findById(playerId)
+        var matches = matchRepository.findAll()
+//        var wins = matches.count { it.winner == player.get().id }
+//        var losses = matches.count { it.winner != player.get().id }
+//        var  mostPlayedCharacter = matches.flatMap { it. }
     }
 
     @GetMapping("/me")
     fun getMe(@RequestHeader("X-AuthToken") token: String): Player {
         tokenValidator.checkTokenValid(token)
-        var tokenDTO = tokenRepository.findTokenDTOByToken(token)
-        return getPlayers(token).first { it.id == tokenDTO.id }
-    }
-
-    @GetMapping("/{playerId}/matches")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    fun getPlayerMatches(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long) {
-        tokenValidator.checkTokenValid(token)
-        var me = getMe(token)
-
-        // TODO:
+        var currentUserId = tokenRepository.findTokenDTOByToken(token).id
+        return getPlayerDetails(token, playerId = currentUserId)
     }
 
     @DeleteMapping("/{playerId}")

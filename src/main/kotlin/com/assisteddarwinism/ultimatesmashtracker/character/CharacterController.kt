@@ -1,8 +1,8 @@
 package com.assisteddarwinism.ultimatesmashtracker.character
 
 import com.assisteddarwinism.ultimatesmashtracker.auth.TokenValidator
-import com.assisteddarwinism.ultimatesmashtracker.character.repository.CharacterRepository
 import com.assisteddarwinism.ultimatesmashtracker.character.model.Character
+import com.assisteddarwinism.ultimatesmashtracker.character.repository.CharacterRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -15,10 +15,10 @@ class CharacterController {
     lateinit var tokenValidator: TokenValidator
 
     @Autowired
-    lateinit var characterRepository : CharacterRepository
+    lateinit var characterRepository: CharacterRepository
 
     @GetMapping
-    fun getCharacters(@RequestHeader("X-AuthToken") token: String) : List<Character>{
+    fun getCharacters(@RequestHeader("X-AuthToken") token: String): List<Character> {
         tokenValidator.checkTokenValid(token)
         return characterRepository.findAll().toList()
     }

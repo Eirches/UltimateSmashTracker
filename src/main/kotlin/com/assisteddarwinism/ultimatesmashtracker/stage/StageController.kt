@@ -1,14 +1,11 @@
 package com.assisteddarwinism.ultimatesmashtracker.stage
 
 import com.assisteddarwinism.ultimatesmashtracker.auth.TokenValidator
-import com.assisteddarwinism.ultimatesmashtracker.model.exception.InvalidInputException
-import com.assisteddarwinism.ultimatesmashtracker.series.repository.SeriesRepository
 import com.assisteddarwinism.ultimatesmashtracker.stage.model.Stage
 import com.assisteddarwinism.ultimatesmashtracker.stage.repository.StageRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.constraints.PastOrPresent
 
 @RestController
 @RequestMapping("/stages")
@@ -18,10 +15,10 @@ class StageController {
     lateinit var tokenValidator: TokenValidator
 
     @Autowired
-    lateinit var stageRepository : StageRepository
+    lateinit var stageRepository: StageRepository
 
     @GetMapping
-    fun getStages(@RequestHeader("X-AuthToken") token : String) : List<Stage> {
+    fun getStages(@RequestHeader("X-AuthToken") token: String): List<Stage> {
         tokenValidator.checkTokenValid(token)
 
         return stageRepository.findAll().toList()

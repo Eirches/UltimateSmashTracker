@@ -5,7 +5,6 @@ import com.assisteddarwinism.ultimatesmashtracker.match.model.Match
 import com.assisteddarwinism.ultimatesmashtracker.match.model.PlayerCharacterRelation
 import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchDTO
 import com.assisteddarwinism.ultimatesmashtracker.match.repository.MatchRepository
-import com.assisteddarwinism.ultimatesmashtracker.player.PlayerController
 import com.assisteddarwinism.ultimatesmashtracker.playerCharacters.model.PlayerCharacterCombination
 import com.assisteddarwinism.ultimatesmashtracker.playerCharacters.repository.PlayerCharacterCombinationRepository
 import org.springframework.beans.factory.annotation.Autowired

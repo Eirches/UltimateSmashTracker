@@ -8,7 +8,8 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name="Matches")
+@Table(name = "Matches")
 data class MatchDTO(val winner: Long, val recorder: Long, val stage: Long, val items: Boolean, val time: Date, @Id @GeneratedValue val id: Long?) {
-    constructor(match: Match) : this(match.winner, match.recorder ?: 0, match.stage, match.items, match.time, match.id)
+    constructor(match: Match) : this(match.winner, match.recorder
+            ?: 0, match.stage, match.items, match.time, match.id)
 }

@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "9041cf14-93dc-4857-9a8a-6baa98757334",
+		"name": "UltimateSmashTracker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2bc0728c-9086-439d-8164-40ff76bc5fd8",
+						"exec": [
+							"pm.environment.set(\"smashtracker-auth\", pm.response.json().authToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-SSK",
+						"value": "{{SSK}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Noah\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/auth",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Character",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"1\",\n  \"name\": \"mario\",\n  \"series\": 0,\n  \"totalPlays\": 1,\n  \"totalWins\": 1,\n  \"totalLosses\": 0\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/characters",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"characters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Characters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/characters",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"characters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Stage",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 0,\n  \"name\": \"corneria\",\n  \"series\": \"01\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/stages",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"stages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Stages",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/stages",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"stages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Matches",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/matches",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-SSK",
+						"value": "{{SSK}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Noah\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/register",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Match",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 0,\n  \"players\": [\n    {\n      \"playerId\": 1,\n      \"characterId\": \"1\"\n    },\n    {\n      \"playerId\": 2,\n      \"characterId\": \"1\"\n    }\n  ],\n  \"winner\": 1,\n  \"stage\": 1,\n  \"items\": true,\n  \"recorder\": 1,\n  \"time\": \"2018-12-17T14:33:23.587Z\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/matches",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"matches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Players",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Noah2\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/players",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Player By Id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Noah2\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/players/:playerId",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"players",
+						":playerId"
+					],
+					"variable": [
+						{
+							"key": "playerId",
+							"value": "1",
+							"type": "string"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Me",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Noah2\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/players",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Player",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Noah2\",\n\t\"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "http://{{smashtracker-endpoint}}/players",
+					"protocol": "http",
+					"host": [
+						"{{smashtracker-endpoint}}"
+					],
+					"path": [
+						"players"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "X-AuthToken",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{smashtracker-auth}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bc07e59d-314c-4274-967d-4e10392054a1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2972640b-c6b5-475c-862e-686e8c9ee71f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d8125418-ab66-4c6b-b81e-ccf2541b98dc",
+			"key": "authToken",
+			"value": "f52bce45-dd50-4230-8d7f-df6427e615dd",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

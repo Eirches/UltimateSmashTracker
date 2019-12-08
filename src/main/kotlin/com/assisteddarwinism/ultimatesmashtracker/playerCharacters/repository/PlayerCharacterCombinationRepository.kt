@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface PlayerCharacterCombinationRepository : CrudRepository<PlayerCharacterCombination, Long> {
-    fun findAllByMatchId(matchId: Long) : Collection<PlayerCharacterCombination>
+    fun findAllByMatchId(matchId: Long): Collection<PlayerCharacterCombination>
 }

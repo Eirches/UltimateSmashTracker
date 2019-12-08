@@ -44,7 +44,6 @@ class MatchController {
         var matchDTO = MatchDTO(match)
         matchRepository.save(matchDTO)
         match.players.forEach { playerCharacterCombinationRepository.save(PlayerCharacterCombination(matchDTO.id!!, it)) }
-
     }
 
     @DeleteMapping("/{matchId}")

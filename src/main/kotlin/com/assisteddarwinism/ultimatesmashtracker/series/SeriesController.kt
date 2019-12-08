@@ -5,7 +5,6 @@ import com.assisteddarwinism.ultimatesmashtracker.model.exception.ResourceNotFou
 import com.assisteddarwinism.ultimatesmashtracker.series.model.Series
 import com.assisteddarwinism.ultimatesmashtracker.series.repository.SeriesRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Repository
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -34,7 +33,7 @@ class SeriesController {
     @DeleteMapping("/{seriesId}")
     fun removeSeries(@RequestHeader("X-AuthToken") token: String, @PathVariable seriesId: Long) {
         tokenValidator.checkTokenAdmin(token)
-        if(!seriesRepository.existsById(seriesId)) throw ResourceNotFoundException()
+        if (!seriesRepository.existsById(seriesId)) throw ResourceNotFoundException()
         seriesRepository.deleteById(seriesId)
     }
 

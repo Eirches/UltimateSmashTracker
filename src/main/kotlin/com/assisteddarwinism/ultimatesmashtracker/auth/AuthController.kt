@@ -3,12 +3,12 @@ package com.assisteddarwinism.ultimatesmashtracker.auth
 import com.assisteddarwinism.ultimatesmashtracker.auth.model.AuthData
 import com.assisteddarwinism.ultimatesmashtracker.auth.model.AuthResponse
 import com.assisteddarwinism.ultimatesmashtracker.auth.model.MakeAdminRequest
+import com.assisteddarwinism.ultimatesmashtracker.auth.model.exception.InvalidCredentialsException
 import com.assisteddarwinism.ultimatesmashtracker.auth.model.exception.UsernameInUseException
 import com.assisteddarwinism.ultimatesmashtracker.auth.repository.password.PasswordDTO
 import com.assisteddarwinism.ultimatesmashtracker.auth.repository.password.PasswordRepository
 import com.assisteddarwinism.ultimatesmashtracker.auth.repository.token.TokenDTO
 import com.assisteddarwinism.ultimatesmashtracker.auth.repository.token.TokenRepository
-import com.assisteddarwinism.ultimatesmashtracker.auth.model.exception.InvalidCredentialsException
 import com.assisteddarwinism.ultimatesmashtracker.model.exception.ResourceNotFoundException
 import com.assisteddarwinism.ultimatesmashtracker.player.repository.PlayerDTO
 import com.assisteddarwinism.ultimatesmashtracker.player.repository.PlayerRepository
@@ -48,7 +48,7 @@ class AuthController {
         //Check if username is present
         if (!playerRepository.existsByName(authData.name)) throw InvalidCredentialsException()
         val player = playerRepository.findByName(authData.name)
-        if(player.isDeleted) throw InvalidCredentialsException()
+        if (player.isDeleted) throw InvalidCredentialsException()
 
         //Check if password matches username's value
         val passwordInfo = passwordRepository.findById(player.id!!).get()
@@ -95,7 +95,7 @@ class AuthController {
     fun makeAdmin(@RequestHeader("X-AuthToken") token: String, @RequestBody makeAdminRequest: MakeAdminRequest) {
         tokenValidator.checkTokenAdmin(token)
 
-        if(!playerRepository.existsById(makeAdminRequest.playerId)) throw ResourceNotFoundException()
+        if (!playerRepository.existsById(makeAdminRequest.playerId)) throw ResourceNotFoundException()
         val storedPlayer = playerRepository.findById(makeAdminRequest.playerId).get()
         val updatedPlayer = PlayerDTO(storedPlayer.name, true, storedPlayer.isDeleted, storedPlayer.id)
         playerRepository.save(updatedPlayer)
@@ -105,7 +105,7 @@ class AuthController {
     fun removeAdmin(@RequestHeader("X-AuthToken") token: String, @PathVariable("playerId") playerId: Long) {
         tokenValidator.checkTokenAdmin(token)
 
-        if(!playerRepository.existsById(playerId)) throw ResourceNotFoundException()
+        if (!playerRepository.existsById(playerId)) throw ResourceNotFoundException()
         val storedPlayer = playerRepository.findById(playerId).get()
         val updatedPlayer = PlayerDTO(storedPlayer.name, false, storedPlayer.isDeleted, storedPlayer.id)
         playerRepository.save(updatedPlayer)

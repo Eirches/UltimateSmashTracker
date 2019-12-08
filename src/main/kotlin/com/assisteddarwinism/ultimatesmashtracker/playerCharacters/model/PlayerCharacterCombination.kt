@@ -7,7 +7,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name="PlayerCharacters")
+@Table(name = "PlayerCharacters")
 data class PlayerCharacterCombination(val playerId: Long, val characterId: String, val matchId: Long, @Id @GeneratedValue val id: Long?) {
     constructor(matchId: Long, player: PlayerCharacterRelation) : this(player.playerId, player.characterId, matchId, null)
 }

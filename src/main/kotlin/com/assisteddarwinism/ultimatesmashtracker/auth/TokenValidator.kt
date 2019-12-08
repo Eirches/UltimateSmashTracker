@@ -19,16 +19,20 @@ class TokenValidator {
     lateinit var playerRepository: PlayerRepository
 
     fun checkTokenValid(token: String) {
-        if(!tokenRepository.existsByToken(token)) throw InvalidCredentialsException()
+        if (!tokenRepository.existsByToken(token)) throw InvalidCredentialsException()
         val storedToken = tokenRepository.findTokenDTOByToken(token)
-        if(storedToken.expiry.before(Date())) throw TokenExpiredException()
+        if (storedToken.expiry.before(Date())) throw TokenExpiredException()
     }
 
     fun checkTokenAdmin(token: String) {
         checkTokenValid(token)
         val storedToken = tokenRepository.findTokenDTOByToken(token)
         val player = playerRepository.findById(storedToken.id)
-        if(!player.get().admin) throw InsufficientPrivilegesException()
+        if (!player.get().admin) throw InsufficientPrivilegesException()
+    }
+
+    fun getIdFromToken(token: String): Long {
+        return tokenRepository.findTokenDTOByToken(token).id
     }
 
 }
